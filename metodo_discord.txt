@@ -1,0 +1,24 @@
+def mainBot():
+  while True:
+    client = discord.Client(intents=discord.Intents.default())
+    @client.event
+    async def on_message(message):
+      #if message.author == client.user:
+      #  return
+      bucket = [0 for _ in range(len(words))]
+      
+      processedInput = nltk.word_tokenize(message.content)
+      print("Contenido: ", processedInput)
+      processedInput = [stemmer.stem(w.lower()) for w in processedInput]
+      for individualWord in processedInput:
+        for i, word in enumerate(words):
+          if word == individualWord:
+            bucket[i] = 1
+      result = model.predict([numpy.array(bucket)])
+      indexResults = numpy.argmax(result)
+      tag = tags[indexResults]
+
+      response = clean_data["respuesta"][tag]
+      print("Respuesta: ", response)
+      await message.channel.send(response)
+    client.run(discord_key)
